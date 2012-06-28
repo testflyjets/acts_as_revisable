@@ -204,18 +204,22 @@ module WithoutScope
           else
             self.revision_class
           end.allocate
+          
+          if Rails::VERSION::MAJOR >= 3 && Rails::VERSION::MINOR >= 1
+            object.init_with('attributes' => record)
+          else
+            object.instance_variable_set("@attributes", record)
+            object.instance_variable_set("@attributes_cache", Hash.new)
 
-          object.instance_variable_set("@attributes", record)
-          object.instance_variable_set("@attributes_cache", Hash.new)
+            if object.respond_to_without_attributes?(:after_find)
+              object.send(:callback, :after_find)
+            end
 
-          if object.respond_to_without_attributes?(:after_find)
-            object.send(:callback, :after_find)
+            if object.respond_to_without_attributes?(:after_initialize)
+              object.send(:callback, :after_initialize)
+            end
           end
-
-          if object.respond_to_without_attributes?(:after_initialize)
-            object.send(:callback, :after_initialize)
-          end
-
+          
           object      
         end
       end
