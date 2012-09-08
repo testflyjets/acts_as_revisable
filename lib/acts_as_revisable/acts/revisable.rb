@@ -127,6 +127,11 @@ module WithoutScope
           revisions.find_by_revisable_number(by)
         end
       end
+      
+      # Finds a revision by its ActiveRecord ID number
+      def find_revision_by_id(id)
+        revisions.find_by_id(id)
+      end
             
       # Returns a revisable_class instance initialized with the record
       # found using find_revision.
